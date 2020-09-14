@@ -1,0 +1,106 @@
+문제
+Contents
+소년 빌게이츠는 정렬 알고리즘의 O(n^2)의 비효율성에 치를 떨며 분노하고 있었다. 평소 평화주의자의 길을 걷고 있던 학원 선생님은 빌게이츠의 마음에 평화를 주기 위해 더 빠른 알고리즘을 소개해주었다. 
+
+1. A[p..r]를 정렬해주는 함수 mergeSort가 있다고 가정한다.
+
+2. A[p..r]에서 절반으로 자른다. (q = (p + r) / 2)
+
+3. A[p..q]와 A[q+1..r]에 대해서 다시 1의 mergeSort를 수행한다.
+
+4. 3이 정상적으로 수행되었다면 A[p...q]와 A[q+1...r]는 정렬되어 있다. 이를 서로 비교하며 merge 한다.
+
+소년 빌게이츠는 이것의 수행시간을 분석해보고 싶었다.  여러분이 할일은 빌게이츠를 도와 다음의 조건대로 비교회수를 구해 출력하는 프로그램을 만드는 것이다. 이 때 머지소트는 빌게이츠가 배운대로 구현되어야 한다.
+
+※ merge할 때 책에 있는 소스 대로 구현해야 합니다. 
+
+Input
+첫 줄에는 정렬해야 하는 원소의 크기 n(1<=n<=10000)이 들어 온다. 
+
+그 다음 줄에는 n개의 임의적인 정수가 들어 온다.
+
+ 
+
+Output
+오름차순으로 정렬할 때, 배열 내 원소들 사이의 비교 회수를 출력한다.
+
+ 
+
+Sample Input
+10
+0 7 1 6 7 7 6 6 5 4 
+ 
+Sample Output
+21
+
+답안
+#include <iostream>
+ 
+using namespace std;
+ 
+int cnt = 0;
+int Array[10001];
+ 
+void MergeSort(int Array[], int p, int r);
+void Merge(int Array[], int p, int q, int r);
+ 
+int main()
+{
+    int number;
+    cin >> number;
+    for (int i = 1; i <= number; i++)
+    {
+        cin >> Array[i];
+    }
+    MergeSort(Array, 1, number);
+    cout << cnt << endl;
+ 
+    //system("pause");
+    return 0;
+}
+ 
+void MergeSort(int Array[], int p, int r)
+{
+    if (p < r)
+    {
+        int q = (p + r) / 2;
+        MergeSort(Array, p, q);
+        MergeSort(Array, q + 1, r);
+        Merge(Array, p, q, r);
+    }
+}
+ 
+void Merge(int Array[], int p, int q, int r)
+{
+    int tmp[10001];
+    int i = p;
+    int j = q + 1;
+    int t = 1;
+    while (i <= q && j <= r)
+    {
+        if (Array[i] < Array[j])
+        {
+            tmp[t++] = Array[i++];
+            cnt++;
+        }
+        else
+        {
+            tmp[t++] = Array[j++];
+            cnt++;
+        }
+    }
+    while (i <= q)
+    {
+        tmp[t++] = Array[i++];
+    }
+    while (j <= r)
+    {
+        tmp[t++] = Array[j++];
+    }
+    i = p;
+    t = 1;
+    while (i <= r)
+    {
+        Array[i++] = tmp[t++];
+    }
+}

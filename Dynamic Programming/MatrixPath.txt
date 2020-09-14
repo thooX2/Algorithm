@@ -1,0 +1,96 @@
+문제
+Contents
+  소년 스티브 잡스는 주말 동안 밤새 열혈코딩을 하느라고 월요일 아침에 늦잠을 자고 말았다. 오전에 수업이 있는 스티브잡스는 빌게이츠와의 경쟁에서 이기기 위해서는 수업에 지각을 하면 안된다. 스티븐 잡스는 머리를 굴리기 위해 지도를 펼쳤다. 
+
+  지도는 왼쪽 가장 위쪽의 좌표가 (1, 1)이고 오른쪽 가장 아래쪽의 좌표가 (4, 4)이다. 각 셀의 숫자는 택시가 움직이는데 드는 시간이다. 즉, (1, 1)에서 택시가 이동하는데 드는 시간은 6이다. 잡스는 (1, 1)의 위치에 있고, 학교는 (4, 4)에 있다. 즉, (1, 1)에서 (4, 4)로 이동 해야 한다. 
+
+06	07	12	05
+05	03	11	18
+07	17	03	03
+08	10	14	09
+   그런데 잡스가 사는 동네의 택시는 사람들의 안전을 위해서 다음과 같은 방식으로 움직인다. 
+
+오른쪽이나 아래쪽으로만 이동할 수 있다.
+왼쪽, 위쪽, 대각선 이동은 할 수 없다. 
+   잡스가 학교에 빨리 가기 위해서는 경로상 걸리는 시간의 합이 최소가 되어야 한다. 여러분이 잡스를 도와야하는 일은 출발점에서 도착점까지의 여러 경로 중 가장 빨리 도착 할 수 있는 시간을 구하는 것이다. 
+
+ 
+
+Input
+첫 줄에는 지도의 크기 n*m(<=100)이 들어온다. 
+
+그 다음 n 줄에는 각 셀의 시간이 들어온다. 각 줄은 해당 행의 시간으로 구성된다.
+
+ 
+
+Output
+(1,1)에서 (n,m) 까지 여러 경로 중 가장 빨리 도착 할 수 있는 시간을 출력한다.
+
+ 
+
+Sample Input
+4 4
+6 7 12 5
+5 3 11 18
+7 17 3 3
+8 10 14 9
+ 
+Sample Output
+40
+
+답안
+#include <iostream>
+ 
+using namespace std;
+ 
+int Array[100][100] = { 0 };
+int Crray[100][100] = { 0 };
+int min_ = 0;
+ 
+int MatrixPath(int row, int col);
+ 
+int main()
+{
+    int row, col;
+    cin >> row >> col;
+ 
+    for (int i = 1; i <= row; i++)
+    {
+        for (int j = 1; j <= col; j++)
+        {
+            cin >> Array[i][j];
+        }
+    }
+    cout << MatrixPath(row, col) << endl;
+    /*system("pause");*/
+    return 0;
+}
+ 
+int MatrixPath(int row, int col)
+{
+    Crray[1][1] = Array[1][1];
+    for (int i = 2; i <= row; i++)
+    {
+        Crray[i][1] = Array[i][1] + Crray[i - 1][1];
+    }
+    for (int j = 2; j <= col; j++)
+    {
+        Crray[1][j] = Array[1][j] + Crray[1][j - 1];
+    }
+    for (int i = 2; i <= row; i++)
+    {
+        for (int j = 2; j <= col; j++)
+        {
+            if (Crray[i - 1][j] > Crray[i][j - 1])
+            {
+                min_ = Crray[i][j - 1];
+            }
+            else
+            {
+                min_ = Crray[i - 1][j];
+            }
+            Crray[i][j] = Array[i][j] + min_;
+        }
+    }
+    return Crray[row][col];
+}

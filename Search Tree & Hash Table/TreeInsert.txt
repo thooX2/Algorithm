@@ -1,0 +1,263 @@
+문제
+Contents
+이진 검색 트리(BST)에서 주어진 입력에 대하여 다음과 같이 treeInsert 함수로 원소를 재귀적으로 삽입 할 때 treeInsert 함수가 호출 되는 횟수를 출력하라. 
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+treeInsert(r, x){
+   if(t = NIL)
+      ket[r] = x; left[r] = NIL; right[r] = NIL;
+      return r;
+   if(x < ket[t]) 
+      left[t] = treeInsert(left[t], x); 
+      return t
+   else
+      right[t] = treeInsert(right[t], x);
+      return t;
+    
+}
+Input
+첫 줄에는 BST에 삽입해야 하는 원소의 개수 n(1<=n<=100)이 들어 온다. 
+
+그 다음 줄에는 n개의 임의의 양의 정수가 들어 온다. 
+
+Output
+모든 원소를 삽입할 때 treeInsert 함수가 호출 되는 총 횟수를 출력한다.
+
+Sample Input
+8
+10 5 3 2 8 6 13 15
+Sample Output
+22
+
+답안
+#include <iostream>
+ 
+using namespace std;
+ 
+int cnt = 0;
+ 
+template <typename T>
+class cBinarySearchTree;
+ 
+template <typename T>
+class cNode
+{
+    friend class cBinarySearchTree<T>;
+ 
+public:
+    cNode()
+    {
+    }
+    cNode(T t)
+    {
+        key = t; left = right = 0;
+    }
+ 
+private:
+    cNode<T>* left;
+    cNode<T>* right;
+    T key;
+};
+ 
+template<typename T>
+class cBinarySearchTree
+{
+    friend class cNode<T>;
+ 
+public:
+    cBinarySearchTree();
+    ~cBinarySearchTree();
+    void treeInsert(T x);
+    void treeDelete(T x);
+    void treePrint();
+ 
+private:
+    cNode<T>* treeInsert(cNode<T>* t, T x);
+    void treeDelete(cNode<T>* t, cNode<T>* r, cNode<T>* p);
+    cNode<T>* deleteNode(cNode<T>* r);
+    void treePrint(cNode<T>* t, int step);
+    cNode<T>* root;
+};
+ 
+template<typename T>
+cBinarySearchTree<T>::cBinarySearchTree()
+{
+    root = NULL;
+}
+ 
+template<typename T>
+cBinarySearchTree<T>::~cBinarySearchTree()
+{
+}
+ 
+template<typename T>
+void cBinarySearchTree<T>::treeInsert(T x)
+{
+    root = treeInsert(root, x);
+}
+ 
+template<typename T>
+void cBinarySearchTree<T>::treeDelete(T x)
+{
+    cNode<T>* r = root;
+    cNode<T>* p = 0;
+ 
+    while (1)
+    {
+        if (r == NULL || r->key == x)
+        {
+            break;
+        }
+        if (x < r->key)
+        {
+            p = r;
+            r = r->left;
+        }
+        else
+        {
+            p = r;
+            r = r->right;
+        }
+    }
+    if (r)
+    {
+        treeDelete(root, r, p);
+    }
+}
+ 
+template<typename T>
+void cBinarySearchTree<T>::treePrint()
+{
+    int step = 0;
+    treePrint(root, step);
+}
+ 
+template<typename T>
+cNode<T>* cBinarySearchTree<T>::treeInsert(cNode<T>* t, T x)
+{
+    if (t == NULL)
+    {
+        cNode<T>* NewNode = new cNode<T>;
+        NewNode->key = x;
+        NewNode->left = NULL;
+        NewNode->right = NULL;
+        return NewNode;
+    }
+    if (x < t->key)
+    {
+        cnt++;
+        t->left = treeInsert(t->left, x);
+        return t;
+    }
+    else
+    {
+        cnt++;
+        t->right = treeInsert(t->right, x);
+        return t;
+    }
+}
+ 
+template<typename T>
+void cBinarySearchTree<T>::treeDelete(cNode<T>* t, cNode<T>* r, cNode<T>* p)
+{
+    if (r == t)
+    {
+        root = deleteNode(t);
+    }
+    else if (r == p->left)
+    {
+        p->left = deleteNode(r);
+    }
+    else
+    {
+        p->right = deleteNode(r);
+    }
+}
+ 
+template<typename T>
+cNode<T>* cBinarySearchTree<T>::deleteNode(cNode<T>* r)
+{
+    if (r->left == NULL && r->right == NULL)
+    {
+        return NULL;
+    }
+    else if (r->left == NULL && r->right != NULL)
+    {
+        return r->right;
+    }
+    else if (r->left != NULL && r->right == NULL)
+    {
+        return r->left;
+    }
+    else
+    {
+        cNode<T> *s = NULL;
+        cNode<T> *parent = NULL;
+        s = r->right;
+        while (s->left != NULL)
+        {
+            parent = s;
+            s = s->left;
+        }
+        r->key = s->key;
+        if (s == r->right)
+        {
+            r->right = s->right;
+        }
+        else
+        {
+            parent->left = s->right;
+        }
+        return r;
+    }
+}
+ 
+template<typename T>
+void cBinarySearchTree<T>::treePrint(cNode<T>* t, int step)
+{
+    if (t == NULL)
+    {
+        step = step - 1;
+        return;
+    }
+    for (int i = 0; i < step; i++)
+    {
+        cout << "    ";
+    }
+    cout << t->key << endl;
+    step = step + 1;
+    this->treePrint(t->left, step);
+    this->treePrint(t->right, step);
+}
+ 
+int main()
+{
+    int number;
+    int x;
+    cBinarySearchTree<int> tree;
+ 
+    cin >> number;
+ 
+    for (int i = 0; i < number; i++)
+    {
+        cin >> x;
+        tree.treeInsert(x);
+        cnt++;
+    }
+ 
+    cout << cnt << endl;
+ 
+    /*system("pause");*/
+    return 0;
+}

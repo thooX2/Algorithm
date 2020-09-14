@@ -1,0 +1,106 @@
+문제
+Contents
+소년 빌게이츠는 MergeSort를 공부하고 재미 있어서 O(nlogn)으로 정렬하는 다른 알고리즘을 찾았다. 그 중 QuickSort는 다음과 같다.
+
+1. A[p..r]를 정렬해주는 함수 quickSort가 있다고 가정한다.
+
+2. A[p..r]에서 기준 원소를 중심으로 대소를 분류 후, 그 기준 원소의 위치를 q라 하자.( partition )
+
+  2.1 기준 원소를 항상 배열의 마지막 위치에 있는 원소로 선택한다. 
+
+3. A[p..q-1]와 A[q+1...r]에 대해서 다시 1의 quickSort를 수행한다.
+
+여기서는 partition을 할 때, 배열 내 원소들 사이의 교환 회수를 계산하여 출력한다. 이 때 퀵소트는 빌게이츠가 배운대로 구현되어야 한다. 빌게이츠가 배운 partition 방법은 다음과 같다.
+
+partition(A[], p, r)
+{
+   x = A[r];
+   i = p - 1;
+   for j = p to r - 1
+      if(A[j] <= x) then A[++i] ↔ A[j];
+   A[i+1] ↔ A[r];
+   return i + 1;
+}
+※ 책과 다른 partition 방법을 쓰면 정렬은 되나 교환 회수가 다르게 나타날 수 있습니다. 문제의 명확성을 위해서 책에 나온 partition을 써놓았고, 문제의 조건을 수정하였습니다. 불편을 끼쳐드려 죄송합니다. 
+
+※ 책 : 쉽게 배우는 알고리즘 관계 중심의 사고법 - 문병로 지음
+
+ 
+
+Input
+첫 줄에는 정렬해야 하는 원소의 개수 n(1<=n<=10000)이 들어 온다. 
+
+그 다음 줄에는 n개의 임의의 정수가 들어온다. 이 때 각 정수는 서로 다른 값을 가진다.
+
+ 
+
+Output
+오름차순으로 정렬할 때, 배열 내 원소들 사이의 교환 회수를 출력한다.
+
+ 
+
+ 
+
+Sample Input
+10
+4 3 7 8 0 5 2 1 6 9 
+ 
+Sample Output
+24
+
+답안
+#include <iostream>
+ 
+using namespace std;
+ 
+int cnt = 0;
+int Array[10001];
+ 
+void QuickSort(int Array[], int p, int r);
+int Partition(int Array[], int p, int r);
+ 
+int main()
+{
+    int number;
+    cin >> number;
+    for (int i = 1; i <= number; i++)
+    {
+        cin >> Array[i];
+    }
+    QuickSort(Array, 1, number);
+    cout << cnt << endl;
+ 
+    //system("pause");
+    return 0;
+}
+ 
+void QuickSort(int Array[], int p, int r)
+{
+    if (p < r)
+    {
+        int q = Partition(Array, p, r);
+        QuickSort(Array, p, q - 1);
+        QuickSort(Array, q + 1, r);
+    }
+}
+ 
+int Partition(int Array[], int p, int r)
+{
+    int x = Array[r];
+    int i = p - 1;
+    for (int j = p; j <= r - 1; j++)
+    {
+        if (Array[j] <= x)
+        {
+            int temp = Array[++i];
+            Array[i] = Array[j];
+            Array[j] = temp;
+            cnt++;
+        }
+    }
+    int temp = Array[i + 1];
+    Array[i + 1] = Array[r];
+    Array[r] = temp;
+    cnt++;
+    return i + 1;
+}

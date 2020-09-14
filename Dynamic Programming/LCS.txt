@@ -1,0 +1,90 @@
+문제
+Contents
+ 
+
+  생명공학연구소에 입사한 컴공 졸업생 길동이에게 염기서열의 유사도를 조사하라는 임무가 내려졌다.
+염기서열의 종류가 너무 많아 비교하기가 어려워 고심하던 길동이는 3학년 알고리즘시간때 배운 LCS(최장공통부분순서) 알고리즘을 생각해냈다.
+ 
+이 문제에서는 동적프로그래밍을 이용해 두개의 염기서열을 비교하여 LCS 길이를 출력하는 프로그램을 짜보도록 한다.
+ 
+ 
+
+       a a b c c q w w
+
+       |            |  |  |
+
+  qww a            q w w b
+
+ 
+
+ 
+
+Input
+비교하고자 하는 두 염기서열 a, b를 입력 받는다. 염기서열 a,b={'a'...'z'}
+
+ 
+
+Output
+주어진 두 문자열의 LCS길이를 출력한다.
+
+ 
+
+Sample Input
+aabccqww
+qwwaqwwb
+Sample Output
+4
+
+답안
+#include <iostream>
+#include <string>
+ 
+using namespace std;
+ 
+int Crray[101][101];
+ 
+int LCS(string m, string n);
+ 
+int main()
+{
+    string m, n;
+    cin >> m >> n;
+    cout << LCS(m, n) << endl;
+ 
+    /*system("pause");*/
+    return 0;
+}
+ 
+int LCS(string m, string n)
+{
+    for (int i = 0; i <= m.size(); i++)
+    {
+        Crray[i][0] = 0;
+    }
+    for (int j = 0; j <= n.size(); j++)
+    {
+        Crray[0][j] = 0;
+    }
+    for (int i = 1; i <= m.size(); i++)
+    {
+        for (int j = 1; j <= n.size(); j++)
+        {
+            if (m.at(i - 1) == n.at(j - 1))
+            {
+                Crray[i][j] = Crray[i - 1][j - 1] + 1;
+            }
+            else
+            {
+                if (Crray[i - 1][j] > Crray[i][j - 1])
+                {
+                    Crray[i][j] = Crray[i - 1][j];
+                }
+                else
+                {
+                    Crray[i][j] = Crray[i][j - 1];
+                }
+            }
+        }
+    }
+    return Crray[m.size()][n.size()];
+}

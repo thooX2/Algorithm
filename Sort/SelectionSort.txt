@@ -1,0 +1,92 @@
+문제
+Contents
+소년 빌게이츠는 학원에서 알고리즘 수업에서 선택정렬을 배웠다. 학원선생님이 말하길 제일 큰 원소를 찾아서 뒤로 옮기면 정렬이 된다고 했다.
+
+학원 선생님이 전수해준 비기는 다음과 같다. 
+
+1. A[1..k]중 가장 큰 원소를 찾는다.
+
+2. 가장 큰 원소를 A[k]와 바꾼다. (매번의 반복 마다 swap은 한번만 일어나야한다.)
+
+3. 배열의 크기가 n이라고 할 때, k = n 부터 k = 2 까지 위 과정을 반복한다.
+
+소년 빌게이츠는 수행 시간을 측정하기 위해 1번에서 최대값을 찾기 위해 수행하는 비교 횟수를 다음의 조건에 따라 측정하기로 했다. 여러분이 해야하는 일은 소년 빌게이츠를 도와 선택정렬의 비교 회수를 출력하면 된다. 선택정렬은 소년 빌게이츠가 배운대로 구현되어야 한다. 
+
+Input
+첫 줄에는 정렬해야 하는 원소의 개수 n(1<=n<=10000)이 들어 온다. 
+
+그 다음 줄에는 n개의 임의의 정수가 들어 온다. 
+
+ 
+
+Output
+오름 차순으로 정렬할 때, 배열 내의 원소들 사이의 비교 회수를 출력한다.
+
+※ 비교 회수를 세는 방법에 대한 추가사항
+
+ - 최대값을 찾기 위한 비교회수를 세는 것은 결국 조건문이 얼마나 수행되었나를 세는 것과 같이 때문에 배열의 크기가 n개 라면 선택정렬 알고리즘에 의해 조건문 수행 회수는 n*(n - 1) / 2와 같다. 이는 정렬 알고리즘을 구현하지 않고도 충분히 수식으로 계산 가능한 값이다. 따라서 다음의 조건일 때만 비교회수를 센다. 
+
+ 조건) A[1..k]에서 최대 값을 찾기 위해 수행하는 조건문이 참일 때만 비교회수를 센다.
+
+※ 최대 값을 구하는 방법에 대한 추가 사항
+
+- 최대값을 구하기 위한 max 초기값을 임의로 잡지 말고 배열 내 첫번째 원소로 잡는다.
+
+Sample Input
+10
+0 7 1 6 7 7 6 6 5 4 
+ 
+Sample Output
+17
+
+답안
+#include <iostream>
+ 
+using namespace std;
+ 
+int cnt = 0;
+int Array[10001];
+ 
+void SelectionSort(int Array[], int number);
+int TheLargest(int Array[], int last);
+ 
+int main()
+{
+    int number;
+    cin >> number;
+    for (int i = 1; i <= number; i++)
+    {
+        cin >> Array[i];
+    }
+    SelectionSort(Array, number);
+    cout << cnt << endl;
+ 
+    //system("pause");
+    return 0;
+}
+ 
+void SelectionSort(int Array[], int number)
+{
+    for (int last=number; last>=2; last--)
+    {
+        int k = TheLargest(Array, last);
+        int temp;
+        temp = Array[last];
+        Array[last] = Array[k];
+        Array[k] = temp;
+    }
+}
+ 
+int TheLargest(int Array[], int last)
+{
+    int largest = 1;
+    for (int i = 2; i<=last; i++)
+    {
+        if (Array[i] > Array[largest])
+        {
+            largest = i;
+            cnt++;
+        }
+    }
+    return largest;
+}

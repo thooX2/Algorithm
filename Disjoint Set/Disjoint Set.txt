@@ -1,0 +1,118 @@
+문제
+Contents
+마을에 N명의 시민이 있다.  입력으로 친구인 사람들의 쌍이 주어진다. 옛말에 의하면 친구의 친구는 친구라고 한다. 즉, A와 B와 친구고 B와 C와 친구면 A와 C 또한 친구이다. 
+
+여러분이 할 일은 친구의 수가 가장 큰 그룹의 사람 수를 출력하는 것이다.
+
+Input
+입력의 첫줄은 n과 m이 들어온다. n은 마을 사람 수(1<N<30000)이고, M은 친구 쌍의 수(1<M<50000)이 들어온다. 
+
+다음 m 줄에는 x, y이 들어오는데 x와 y는 친구라는 뜻이다. 
+
+ 
+
+Output
+가장 큰 친구 그룹의 사람 수를 출력한다.
+
+ 
+
+Sample Input
+10 12
+1 2
+3 1
+3 4
+5 4
+3 5
+4 6
+5 2
+2 1
+7 10
+1 2
+9 10
+8 9
+
+ 
+Sample Output
+6
+
+답안
+#include <iostream>
+ 
+using namespace std;
+ 
+int P[30001];
+int Level[30001];
+int Cnt[30001] = {0};
+int max_ = 0;
+ 
+void Make_Set(int number);
+void Union(int pair01, int pair02);
+int Find_Set(int number);
+ 
+int main()
+{
+    int number, pair_number, pair01, pair02;
+ 
+    cin >> number >> pair_number;
+ 
+    for (int i = 1; i <= number; i++)
+    {
+        Make_Set(i);
+    }
+ 
+    for (int i = 0; i < pair_number; i++)
+    {
+        cin >> pair01 >> pair02;
+        Union(pair01, pair02);
+    }
+     
+    for (int i = 1; i <= number; i++)
+    {
+        Cnt[P[i]]++;
+        if (max_ < Cnt[P[i]])
+        {
+            max_ = Cnt[P[i]];
+        }
+    }
+    cout << max_ << endl;
+ 
+    /*system("pause");*/
+    return 0;
+}
+ 
+void Make_Set(int number)
+{
+    P[number] = number;
+    Level[number] = 0;
+}
+ 
+void Union(int pair01, int pair02)
+{
+    pair01 = Find_Set(pair01);
+    pair02 = Find_Set(pair02);
+ 
+    if (Level[pair01] > Level[pair02])
+    {
+        P[pair02] = pair01;
+    }
+    else
+    {
+        P[pair01] = pair02;
+        if (Level[pair01] == Level[pair02])
+        {
+            Level[pair02] = Level[pair02] + 1;
+        }
+    }
+}
+ 
+int Find_Set(int number)
+{
+    if (number == P[number])
+    {
+        return number;
+    }
+    else
+    {
+        return Find_Set(P[number]);
+    }
+}

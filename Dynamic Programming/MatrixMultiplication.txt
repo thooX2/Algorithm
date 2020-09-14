@@ -1,0 +1,85 @@
+문제
+Contents
+  소년 스티브 잡스는 최근에 나온 디아블X3를 밤새 하다가 잠이 들어 버렸다. 디아블X3에 너무 광분한 나머지 꿈속에서도 소년 스티브 잡스는 지옥에 빠졌다. 지옥의 이름은 행렬지옥. 행렬지옥의 보스몹(로우컬럼)을 잡기 위해서는 스티브 잡스가 가지고 있는 사과를 던지거나, 주어진 행렬들을 가장 최소의 횟수로 곱해야 한다. 
+
+  스티브 잡스는 너무 배가 고파서 가지고 있는 사과를 다 먹었기 때문에 어쩔 수 없이 행렬을 곱해야 한다. 행렬 A(3*2), B(2*4), C(4*3) 이 순서대로 주어 질 때 이를 곱하는 방법은 두가지 이다.
+
+(A*B) * C
+A * (B*C) 
+  첫 번째 방법에서 총 곱셈 수는 (3*2*4) + (3*4*3) = 60 번이다. 두 번째 방법은 (2*4*3) + 3*2*3 = 36 이다. 따라서 두번째 방법으로 행렬을 곱해야지만 로우컬럼이 스스로 자폭하게 된다. 
+
+  여러분이 할일은 로우컬럼이 생산한 N개의 행렬를 모두 곱하는데 드는 최소 횟수를 스티브 잡스에게 알려주는 것이다. 
+
+ 
+
+Input
+첫째줄에 연산을 수행할 행렬 n(1<=n<=100)을 입력받는다.
+
+두번째줄부터 n개의 행렬의 행 col(1<=col<=100)과 열 row(1<=row<=100)를 공백을 사이에 두고 입력받는다.
+
+Output
+행렬연산의 최소 횟수를 출력한다.
+
+Sample Input
+4
+3 5
+5 1
+1 8
+8 4
+Sample Output
+59
+
+답안
+#include <iostream>
+ 
+using namespace std;
+ 
+int Array[101][2] = { 0 };
+int Mrray[101][101] = { 0 };
+int min_;
+ 
+int MatrixChain(int num);
+ 
+int main()
+{
+    int num, col, row;
+    cin >> num;
+    for (int i = 1; i <= num; i++)
+    {
+        cin >> col >> row;
+        Array[i][0] = col;
+        Array[i][1] = row;
+    }
+ 
+    cout << MatrixChain(num) << endl;
+ 
+    /*system("pause");*/
+    return 0;
+}
+ 
+int MatrixChain(int num)
+{
+    for (int i = 1; i <= num; i++)
+    {
+        Mrray[i][i] = 0;
+    }
+ 
+    for (int r = 1; r <= num - 1; r++)
+    {
+        for (int i = 1; i <= num - r; i++)
+        {
+            int j = i + r;
+            min_ = 100000;
+            for (int k = i; k <= j - 1; k++)
+            {
+                if (min_ > (Mrray[i][k] + Mrray[k + 1][j] + (Array[i][0] * Array[k][1] * Array[j][1])))
+                {
+                    min_ = Mrray[i][k] + Mrray[k + 1][j] + (Array[i][0] * Array[k][1] * Array[j][1]);
+                }
+            }
+            Mrray[i][j] = min_;
+        }
+    }
+ 
+    return Mrray[1][num];
+}

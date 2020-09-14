@@ -1,0 +1,149 @@
+문제
+Contents
+  KMP를 마스터하여 자신의 블로그에 당당하게 솔루션을 기재한 스티브 잡스는 이제 패턴을 찾는 알고리즘은 더 이상 없을 것이라고 생각했다. 그러던 어느날 블로그에 스티브 잡스를 난감하게 만든 댓글이 달렸다.
+
+Commented by : Boyer-Moore
+
+다음 알고리즘으로 KMP보다 더 빠르게 끝낼 수 있습니다.
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+BoyerMooreHorspool(A, P)
+{
+   computeJump(P, jump);
+   i = 1;
+   while(i <= n-m+1){
+      j = m; k = i + m - 1;
+      while(j>0 and P[j] == A[k]){
+         // ----(1) 여기서 카운팅 한다.
+         j--;k--;
+      }
+      if(j == 0) then A[i] 자리에서 매칭이 발견되었음을 알린다.
+      i = i + jump[A[i+m-1]];
+   }
+}
+  곰곰히 읽어보던 스티브 잡스는 발상의 전환에 무릎을 탁 치며 다시 쓰리스타 PC에 앉았다. 여러분이 할일은 성능 측정을 위해서 (1)에서 카운팅을 하고 마지막에 반복 회수와 패턴 개수를 출력하는 것이다. 
+
+* jump를 계산하는 방법은 교과서를 참고한다.
+
+Input
+두 개의 문자열이 들어온다. 첫 번째 문자열은 원본 문자열, 두 번째 문자열은 패턴 문자열이다. 패턴 문자열의 길이는 원본 문자열의 길이보다 작다.
+
+ 
+
+Output
+반복 횟수를 출력하고 패턴 개수를 출력한다. 각 숫자는 빈 칸으로 구분 되어야 한다.
+
+ 
+
+Sample Input
+asdjfatigerdasftiger
+tiger
+ 
+Sample Output
+10 2
+
+답안
+#include <iostream>
+#include <string>
+ 
+using namespace std;
+ 
+int count_ = 0;
+int match_ = 0;
+int Jump[101];
+ 
+void BoyerMooreHorspool(string string_01, string string_02);
+void ComputeJump(string string_00, int Jump[]);
+ 
+int main()
+{
+    string string_01, string_02;
+    cin >> string_01 >> string_02;
+ 
+    BoyerMooreHorspool(string_01, string_02);
+ 
+    cout << count_ << " " << match_ << endl;
+ 
+    /*system("pause");*/
+    return 0;
+}
+ 
+void BoyerMooreHorspool(string string_01, string string_02)
+{
+    ComputeJump(string_02, Jump);
+    int i = 0;
+    while (i < (int)(string_01.length()) - (int)(string_02.length()) + 1)
+    {
+        int j = (int)(string_02.length()) - 1;
+        int k = i + (int)(string_02.length()) - 1;
+        while (j >= 0 && string_02.at(j) == string_01.at(k))
+        {
+            count_++;
+            j--;
+            k--;
+        }
+        if (j == -1)
+        {
+            string_01.at(i);
+            match_++;
+        }
+ 
+        int match_val = 0;
+        for (int l = 0; l < (int)(string_02.length()); l++)
+        {
+            if (string_01.at(i + (int)(string_02.length()) - 1) == string_02.at(l))
+            {
+                match_val = Jump[l];
+            }
+        }
+        if (match_val == 0)
+        {
+            i = i + (int)(string_02.length());
+        }
+        else
+        {
+            i = i + match_val;
+        }
+    }
+}
+ 
+void ComputeJump(string string_00, int Jump[])
+{
+    for (int i = 0; i < (int)(string_00.length()) - 1; i++)
+    {
+        Jump[i] = (int)(string_00.length()) - i - 1;
+    }
+    Jump[(int)(string_00.length()) - 1] = (int)(string_00.length());
+ 
+ 
+    for (int i = 0; i < (int)(string_00.length()) - 1; i++)
+    {
+        for (int j = i + 1; j < (int)(string_00.length()) - 1; j++)
+        {
+            if (string_00.at(i) == string_00.at(j))
+            {
+                if (Jump[i] > Jump[j])
+                {
+                    Jump[i] = NULL;
+                }
+                else
+                {
+                    Jump[j] = NULL;
+                }
+            }
+        }
+    }
+}

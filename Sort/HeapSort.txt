@@ -1,0 +1,121 @@
+문제Contents
+학원 선생님은 소년 빌게이츠가 열정적으로 코딩하는 모습을 보고 감동해서 다른 O(nlogn) 알고리즘인 HeapSort를 소개 해주었다. (소년 빌게이츠는 작년에 자료구조 시간에 Heap배워서 Heap을 구성 할 순 있었다.)
+
+1. A[1...n]에 대해서 Max-Heap를 구성한다
+
+2. A[1...k]에서 A[1]과 A[k]를 맞바꾼다.
+
+3. A[1...k-1]에서 다시 Max-Heap을 재구성한다.
+
+4. A[1...k-1]에 대해서 2, 3을 반복한다.
+
+여기서 3번의 Max-heap를 재구성할 때 필요한 원소의 교환 회수를 계산해서 출력한다. (1번의 과정을 위한 원소 교환 회수는 제외) 이 때 힙소트는 빌게이츠가 배운대로 구현되어야 한다.
+
+※ heapify에서 원소 비교 기준 추가
+
+1. 부모의 왼쪽 원소와 오른쪽 원소가 같은 경우 큰 것을 오른쪽 원소로 한다. 
+
+2. 부모와 bigger의 교환는 bigger가 클 때만 교환한다.
+
+Input
+첫 줄에는 정렬해야 하는 원소의 개수 n(1<=n<=10000)이 들어 온다. 
+
+그 다음 줄에는 n개의 임의의 정수가 들어 온다. 
+
+ 
+
+Output
+오름 차순으로 정렬하고, Max-heap를 재구성할 때 필요한 원소의 교환 회수를 계산해서 출력한다.
+
+Sample Input
+10
+0 7 1 6 7 7 6 6 5 4 
+ 
+Sample Output
+12
+
+답안
+#include <iostream>
+ 
+using namespace std;
+ 
+int cnt = 0;
+int Array[10001];
+bool judge = false;
+ 
+void HeapSort(int Array[], int number);
+void BuildHeap(int Array[], int number);
+void Heapify(int Array[], int k, int number);
+ 
+int main()
+{
+    int number;
+    cin >> number;
+    for (int i = 1; i <= number; i++)
+    {
+        cin >> Array[i];
+    }
+    HeapSort(Array, number);
+    cout << cnt << endl;
+ 
+    //system("pause");
+    return 0;
+}
+ 
+void HeapSort(int Array[], int number)
+{
+    BuildHeap(Array, number);
+    judge = true;
+    for (int i = number; i >= 2; i--)
+    {
+        int temp = Array[1];
+        Array[1] = Array[i];
+        Array[i] = temp;
+        Heapify(Array, 1, i - 1);
+    }
+}
+ 
+void BuildHeap(int Array[], int number)
+{
+    for (int i = number / 2; i >= 1; i--)
+    {
+        Heapify(Array, i, number);
+    }
+}
+ 
+void Heapify(int Array[], int k, int number)
+{
+    int left = 2 * k;
+    int right = 2 * k + 1;
+    int bigger;
+    if (right <= number)
+    {
+        if (Array[left] > Array[right])
+        {
+            bigger = left;
+        }
+        else
+        {
+            bigger = right;
+        }
+    }
+    else if (left <= number)
+    {
+        bigger = left;
+    }
+    else
+    {
+        return;
+    }
+    if (Array[bigger] > Array[k])
+    {
+        int temp = Array[k];
+        Array[k] = Array[bigger];
+        Array[bigger] = temp;
+        if (judge == true)
+        {
+            cnt++;
+        }
+        Heapify(Array, bigger, number);
+    }
+}

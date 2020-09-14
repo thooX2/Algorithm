@@ -1,0 +1,76 @@
+문제
+Contents
+이번에는 삽입정렬이다. 방법은 다음과 같다.
+
+1. A[1..k]중 A[k]가 들어갈 적당한 자리를 찾는다. 
+
+2. 배열의 크기가 n이라고 할 때, k = 1부터 k = n 까지 위 과정을 반복한다. 
+
+※ 이동에 대한 추가 설명
+
+ - A[k]가 들어갈 적당한 자리를 찾기 위해 원소가 오른쪽으로 이동 하는 횟수와
+
+ - A[k]가 적당한 위치에 삽입되는 회수까지 포함하여 센다.
+
+삽입정렬 또한 빌게이츠가 배운대로 구현되어야 한다. 
+
+Input
+첫 줄에는 정렬해야 하는 원소의 개수 n(1<=n<=10000)이 들어 온다. 
+
+그 다음 줄에는 n개의 임의의 정수가 들어 온다.
+
+ 
+
+Output
+오름차순으로 정렬할 때, 배열 내의 원소들의 이동회수를 출력한다.
+
+ 
+
+Sample Input
+10
+0 7 1 6 7 7 6 6 5 4 
+ 
+Sample Output
+30
+
+답안
+#include <iostream>
+ 
+using namespace std;
+ 
+int cnt = 0;
+int Array[10001];
+ 
+void InsertionSort(int Array[], int number);
+ 
+int main()
+{
+    int number;
+    cin >> number;
+    for (int i = 1; i <= number; i++)
+    {
+        cin >> Array[i];
+    }
+    InsertionSort(Array, number);
+    cout << cnt << endl;
+ 
+    //system("pause");
+    return 0;
+}
+ 
+void InsertionSort(int Array[], int number)
+{
+    for (int i = 2; i <= number; i++)
+    {
+        int Loc = i - 1;
+        int NewItem = Array[i];
+        while (Loc >= 1 && NewItem < Array[Loc])
+        {
+            Array[Loc + 1] = Array[Loc];
+            Loc--;
+            cnt++;
+        }
+        Array[Loc + 1] = NewItem;
+        cnt++;
+    }
+}

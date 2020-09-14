@@ -1,0 +1,138 @@
+문제
+Contents
+  소년 스티브 잡스는 심심해서 보드게임을 사러 갔다. 보드게임 가게 주인장은 새로 나온 게임이라면서 "조약돌 놓기" 게임을 소개 시켜주었다. 게임의 규칙은 다음과 같다. 
+
+3*N 테이블의 각 칸에는 양 또는 음의 정수가 기록 되어 있다.
+조약돌을 놓는 방법
+각 열에는 적어도 하나의 조약돌을 놓아야 한다
+가로나 세로로 인접한 두 칸에 동시에 조약돌을 놓을 수 없다.
+  퍼즐에 능수능란한 재능을 지녔던 스티브 잡스는 조약돌을 보드 판에 놓기 시작했다. 얼마 지나지 않아서 스티브 잡스는 규칙을 파악 할 수 있었고 모든 경우의 수를 구하여 조약돌을 놓는 것은 삽질 이라는 것을 깨달았다. 그리고 문제의 최종적인 목표는 규칙에 맞게 조약돌을 놓고 조약돌이 놓인 자리의 모든 수를 더했을 때 그것이 최대가 되는 것을 구하는 것이다. 
+
+  여러분이 할 일은 스티브 잡스를 도와 최대값을 구하는 프로그램을 작성하는 것이다.
+
+Input
+첫 줄에는 보드판의 가로 크기 m (m<=100)이 들어온다. 
+
+그 다음 3줄에는 각 행의 원소값이 들어온다. 
+
+ 
+
+Output
+규칙에 맞게 조약돌을 놓고 그 합의 모든 경우의 수중 가장 큰 값을 출력한다.
+
+ 
+
+Sample Input
+8
+6 7 12 -5 5 3 11 3
+-8 10 14 9 7 13 8 5
+11 12 7 4 8 -2 9 4
+ 
+Sample Output
+106
+
+답안
+#include <iostream>
+ 
+using namespace std;
+ 
+int Array[4][101] = { 0 };
+int Wrray[5][101] = { 0 };
+int past_max, result_max;
+ 
+int Pebble(int col);
+ 
+int main()
+{
+    int col;
+    cin >> col;
+ 
+    for (int i = 1; i <= 3; i++)
+    {
+        for (int j = 1; j <= col; j++)
+        {
+            cin >> Array[i][j];
+        }
+    }
+ 
+    cout << Pebble(col) << endl;
+ 
+    /*system("pause");*/
+    return 0;
+}
+ 
+int Pebble(int col)
+{
+    for (int p = 1; p <= 4; p++)
+    {
+        if (p == 4)
+        {
+            Wrray[p][1] = Array[1][1] + Array[3][1];
+        }
+        else
+        {
+            Wrray[p][1] = Array[p][1];
+        }
+    }
+    for (int i = 2; i <= col; i++)
+    {
+        for (int p = 1; p <= 4; p++)
+        {
+            past_max = -10000;
+            if (p == 1)
+            {
+                if (Wrray[2][i - 1] < Wrray[3][i - 1])
+                {
+                    past_max = Wrray[3][i - 1];
+                }
+                else
+                {
+                    past_max = Wrray[2][i - 1];
+                }
+                Wrray[p][i] = past_max + Array[1][i];
+            }
+            else if (p == 2)
+            {
+                for (int j = 1; j <= 4; j++)
+                {
+                    if (j != 2)
+                    {
+                        if (past_max < Wrray[j][i - 1])
+                        {
+                            past_max = Wrray[j][i - 1];
+                        }
+                    }
+                }
+                Wrray[p][i] = past_max + Array[2][i];
+            }
+            else if (p == 3)
+            {
+                if (Wrray[1][i - 1] < Wrray[2][i - 1])
+                {
+                    past_max = Wrray[2][i - 1];
+                }
+                else
+                {
+                    past_max = Wrray[1][i - 1];
+                }
+                Wrray[p][i] = past_max + Array[3][i];
+            }
+            else if (p == 4)
+            {
+                past_max = Wrray[2][i - 1];
+                Wrray[p][i] = past_max + Array[1][i] + Array[3][i];
+            }
+        }
+    }
+ 
+    result_max = Wrray[1][col];
+    for (int p = 2; p <= 4; p++)
+    {
+        if (result_max < Wrray[p][col])
+        {
+            result_max = Wrray[p][col];
+        }
+    }
+ 
+    return result_max;
+}

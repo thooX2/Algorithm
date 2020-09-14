@@ -1,0 +1,147 @@
+문제
+Contents
+이번에는 KMP알고리즘을 사용해 문자열을 찾아보도록 한다.
+
+KMP알고리즘은 각 패턴마다 비교 실패시 돌아갈 위치를 저장해 놓고 사용함으로 전처리를 위한 비용을 줄일 수 있다.
+
+KMP알고리즘의 비교횟수를 출력하도록 한다.
+
+ 
+
+- 이번 과제에서는 공백이 포함되지 않는 알파벳 소문자로 구성된 문장으로 수행한다.
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+KMP(A[],P[])
+{
+    preprocessing(P);
+    i←1; // 본문 문자열 포인터
+    j←1; // 패턴 문자열 포인터
+ 
+    // n:배열 A[]의 길이, m:배열 P[]의 길이
+    while(i<=n) {
+        cnt++;
+        if(j==0 or A[i]==P[j])
+            then { i++; j++; }
+        else j←π[j];
+ 
+        if(j==m+1) then {
+            //          <------- 여기서 count 값을 출력하도록 한다.
+            j←π[j];
+        }
+    }
+}
+ 
+※ 위 수도코드에서 문자열 P와 A는 index 1 부터 시작한다는 가정하에 작성되었다.
+ 
+
+Input
+첫줄에는 검색할 문장(P)이 입력된다. 
+
+둘째줄에는 찾고자하는 패턴 문장(A)이 입력된다.
+
+ 
+
+Output
+count값을 출력한다. count값이 여러개일 경우 라인을 갱신해가며 출력한다. 만약 검색이 실패할 경우 "fail"을 출력한다.
+
+ 
+
+Sample Input
+abcdabcdabcwz
+abcdabcwz
+ 
+Sample Output
+14
+
+답안
+#include <iostream>
+#include <string>
+ 
+using namespace std;
+ 
+int pi_[101];
+int count_ = 0;
+bool fail_ = true;
+ 
+void KMP(string string_01, string string_02);
+void Preprocessing(string string_00);
+ 
+int main()
+{
+    string string_01, string_02;
+    cin >> string_01 >> string_02;
+ 
+    KMP(string_01, string_02);
+ 
+    /*system("pause");*/
+    return 0;
+}
+ 
+void KMP(string string_01, string string_02)
+{
+    Preprocessing(string_02);
+    int i = 0;
+    int j = 0;
+    while (i < (int)(string_01.length()))
+    {
+        count_++;
+        if (j == 0 || string_01.at(i) == string_02.at(j))
+        {
+            i++;
+            j++;
+        }
+        else
+        {
+            j = pi_[j];
+        }
+ 
+        if (j == (int)(string_02.length()))
+        {
+            cout << count_ << endl;
+            j = pi_[j];
+            fail_ = false;
+        }
+    }
+    if (fail_ == true)
+    {
+        cout << "fail" << endl;
+    }
+}
+ 
+void Preprocessing(string string_00)
+{
+    int j = 0;
+    int k = -1;
+    pi_[0] = -1;
+    while (j < (int)(string_00.length()))
+    {
+        if (k == -1 || string_00.at(j) == string_00.at(k))
+        {
+            j++;
+            k++;
+            pi_[j] = k;
+        }
+        else
+        {
+            k = pi_[k];
+        }
+    }
+}

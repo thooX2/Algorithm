@@ -1,0 +1,144 @@
+문제
+Contents
+빌게이츠는 정렬하고자 하는 원소들의 값이 한정되있는 경우, 예를 들어서 배열 A[1..n]의 원소들이 k를 넘지 않는 자연수인 경우 각 원소를 세는(count)하는 방식으로도 정렬을 할 수 있음을 알아냈다. 알고리즘은 다음과 같다. 
+
+1. 배열 A에서 max와 min값을 찾고 k를 max - min + 1로 둔다. 
+
+2. 배열 C를 k 만큼 확보 한다. 
+
+3. 배열 A에 대해서 각 원소를 카운팅 한다. 예를 들어 32에 대해서는 C[32 - min]을 1 증가 한다.
+
+4. 배열 C를 2부터 시작해서 k까지 누적한다. ( C[1...k] )
+
+   C[i] = C[i] + C[i - 1];
+
+5. 배열 A에 대해서 카운팅 횟수를 참조하여 B에 다음과 같은 방식으로 기록한다.
+
+ B[C[A[j] - min]] = A[j];
+
+C[A[j] - min] --;
+
+위 과정을 수도 코드로 표현 하면 다음과 같다.
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+coutingSort(A, B, n){
+   //A[1...n]
+   //B[1...n]
+   //C[1...k]
+   //find min max of A
+   k = max - min + 1
+   for i = 1 to k
+      C[i] = 0;
+   for j = 1 to n
+      C[A[j]-min]++;
+   for i = 2 to k
+      C[i] = C[i] + C[i-1];
+   for j = n to 1
+      B[C[A[j]-min] = A[j]
+      C[A[j]-min]--;
+}
+이 때 빌게이츠는 누적 배열의 값이 궁금해졌다. 여러분이 할일은 B에 값을 쓰기 전에 누적 배열의 값들을 출력해야 한다.
+
+ 
+
+Input
+첫 줄에는 정렬해야 하는 원소의 개수 n(1<=n<=10000)이 들어온다.
+
+그 다음 줄에는 n개의 임의의 정수가 들어 온다.
+
+ 
+
+Output
+오름차순으로 정렬할 때, 누적 배열 C[1...k]의 원소들을 1부터 k까지 하나씩 출력한다. 
+
+각 원소는 빈칸으로 분리 되어야 한다. 
+
+ 
+
+Sample Input
+10
+0 7 1 6 7 7 6 6 5 4 
+ 
+Sample Output
+1 2 2 2 3 4 7 10
+
+답안
+#include <iostream>
+ 
+using namespace std;
+ 
+int Array[10001];
+int Brray[10001];
+ 
+void CountingSort(int Array[], int Brray[], int number);
+ 
+int main()
+{
+    int number;
+    cin >> number;
+    for (int i = 1; i <= number; i++)
+    {
+        cin >> Array[i];
+    }
+    CountingSort(Array, Brray, number);
+ 
+    //system("pause");
+    return 0;
+}
+ 
+void CountingSort(int Array[], int Brray[], int number)
+{
+ 
+    int Array_Max = Array[1];
+    int Array_Min = Array[1];
+    for (int i = 1; i <= number; i++)
+    {
+        if (Array_Max < Array[i])
+        {
+            Array_Max = Array[i];
+        }
+        if (Array_Min > Array[i])
+        {
+            Array_Min = Array[i];
+        }
+    }       
+    int Crray[10001];
+    int k = Array_Max - Array_Min + 1;
+    for (int i = 1; i <= k; i++)
+    {
+        Crray[i] = 0;
+    }
+    for (int j = 1; j <= number; j++)
+    {
+        Crray[(Array[j] - Array_Min)+1]++;
+    }
+    for (int i = 2; i <= k; i++)
+    {
+        Crray[i] = Crray[i] + Crray[i - 1];
+    }
+    /*for (int j = number; j >= 1; j--)
+    {
+        Brray[Crray[Array[j] - Array_Min]] = Array[j];
+        Crray[Array[j] - Array_Min]--;
+    }*/
+    for (int i = 1; i <= k; i++)
+    {
+        cout << Crray[i] << " ";
+    }
+    cout << endl;
+}
